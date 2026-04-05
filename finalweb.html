@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Quiz rápido</title>
+<style>
+    body {
+        background: white;
+        font-family: Arial;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .header {
+        background: orange;
+        color: white;
+        padding: 15px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    input, button {
+        padding: 10px;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    #timer {
+        margin-top: 20px;
+        font-size: 20px;
+    }
+</style>
+</head>
+<body>
+
+<div class="header">Respond quickly</div>
+
+<h2 id="question"></h2>
+<input type="text" id="answer" placeholder="Tu respuesta">
+<br>
+<button onclick="checkAnswer()">Enviar</button>
+<div id="timer"></div>
+<div id="message"></div>
+
+<script>
+// BLOQUEO 1 HORA
+const bloqueo = localStorage.getItem("bloqueoTiempo");
+if (bloqueo && Date.now() < bloqueo) {
+    document.body.innerHTML = "<h1>Bloqueado. Inténtalo en 1 hora.</h1>";
+}
+
+// PREGUNTAS Y RESPUESTAS
+const quiz = [
+    {q:"Cuantas cartas tiene una baraja", a:"52"},
+    {q:"Como nos llamamos", a:"3031"},
+    {q:"Animal que nos representa", a:"Caelifera"},
+    {q:"Primer presidente de EE.UU (Con mayusculas)", a:"George Washington"},
+    {q:"Pais mas pequeño del mundo (Con mayusculas)", a:"Ciudad del Vaticano"},
+    {q:"En que año inicio la guerra civil española", a:"1936"},
+    {q:"En que año empezo la segunda guerra mundial", a:"1939"},
+    {q:"Quien era el famoso dictador fascista de Italia en la segunda guerra mundial (Nombre y appelido)", a:"Benito Mussolini"},
+    {q:"Nombre del cifrado del acertijo de la biblia", a:"base64"},
+    {q:"Cual es el avion mas poderoso del mundo", a:"F35"}
+];
+
+let current = 0;
+let timeLeft = 10;
+let timer;
+
+function showQuestion() {
+    document.getElementById("question").innerText = quiz[current].q;
+    document.getElementById("answer").value = "";
+    timeLeft = 10;
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = "Tiempo: " + timeLeft;
+
+        if (timeLeft <= 0) {
+            fail();
+        }
+    }, 1000);
+}
+
+function checkAnswer() {
+    let userAnswer = document.getElementById("answer").value.toLowerCase();
+
+    if (userAnswer === quiz[current].a) {
+        current++;
+        clearInterval(timer);
+
+        if (current < quiz.length) {
+            showQuestion();
+        } else {
+            // REDIRECCIÓN SI GANA
+            window.location.href = "frederick945.github.io/FGGGADDASSS/"; // cambia esto
+        }
+    } else {
+        fail();
+    }
+}
+
+function fail() {
+    clearInterval(timer);
+    localStorage.setItem("bloqueoTiempo", Date.now() + 3600000); // 1 hora
+    document.body.innerHTML = "<h1>Fallaste. Vuelve en 1 hora.</h1>";
+}
+
+// iniciar
+showQuestion();
+</script>
+
+</body>
+</html>
